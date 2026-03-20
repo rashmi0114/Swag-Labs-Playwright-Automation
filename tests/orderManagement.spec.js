@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { config } from '../config/testData';
 
 const firstNameData = "Rashmi";
 const lastNameData = "Alagiyawanna";
@@ -22,9 +23,11 @@ const backToProductsButton = '[data-test="back-to-products"]';
 const orderName =
   '[data-test="item-4-title-link"] [data-test="inventory-item-name"]';
 const pageTitle = '[data-test="title"]';
-const orderTile = '[data-test="add-to-cart-sauce-labs-backpack"]';
+const addtoCartButton = '[data-test="add-to-cart-sauce-labs-backpack"]';
+const removeFromCartButton = '[data-test="remove-sauce-labs-backpack"]';
 const shoppingCartLink = '[data-test="shopping-cart-link"]';
 const checkoutButton = '[data-test="checkout"]';
+const continueShoppingButton = '[data-test="continue-shopping"]';
 
 test.beforeEach(async ({ page }) => {
   await page.goto(config.baseURL);
@@ -39,7 +42,7 @@ test.beforeEach(async ({ page }) => {
 
 test("test add order to cart @sanity", async ({ page }) => {
   await expect(page.locator(orderName)).toContainText(orderNameData);
-  await page.locator(orderTile).click();
+  await page.locator(addtoCartButton).click();
   await page.locator(shoppingCartLink).click();
   await expect(page.locator(pageTitle)).toContainText(titleyourCart);
   await expect(page.locator(checkoutButton)).toBeVisible();
@@ -58,6 +61,17 @@ test("test add order to cart @sanity", async ({ page }) => {
     checkoutCompleteText,
   );
   await page.locator(backToProductsButton).click();
+});
+
+test("test remove order to cart @sanity", async ({ page }) => {
+  await expect(page.locator(orderName)).toContainText(orderNameData);
+  await page.locator(addtoCartButton).click();
+  await page.locator(removeFromCartButton).click();
+  await page.locator(addtoCartButton).click();
+  await page.locator(shoppingCartLink).click();
+  await expect(page.locator(pageTitle)).toContainText(titleyourCart);
+  await page.locator(removeFromCartButton).click();
+  await page.locator(continueShoppingButton).click();
 });
 
 test.afterEach(async ({ page }) => {
