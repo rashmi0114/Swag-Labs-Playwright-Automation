@@ -23,11 +23,13 @@ const backToProductsButton = '[data-test="back-to-products"]';
 const orderName =
   '[data-test="item-4-title-link"] [data-test="inventory-item-name"]';
 const pageTitle = '[data-test="title"]';
-const addtoCartButton = '[data-test="add-to-cart-sauce-labs-backpack"]';
+const addToCartButton = (productName) => `[data-test="add-to-cart-${productName}"]`;
 const removeFromCartButton = '[data-test="remove-sauce-labs-backpack"]';
 const shoppingCartLink = '[data-test="shopping-cart-link"]';
 const checkoutButton = '[data-test="checkout"]';
 const continueShoppingButton = '[data-test="continue-shopping"]';
+const cartItems = '.cart_item'; 
+
 
 test.beforeEach(async ({ page }) => {
   await page.goto(config.baseURL);
@@ -42,7 +44,7 @@ test.beforeEach(async ({ page }) => {
 
 test("test add order to cart @sanity", async ({ page }) => {
   await expect(page.locator(orderName)).toContainText(orderNameData);
-  await page.locator(addtoCartButton).click();
+  await page.locator(addToCartButton('sauce-labs-backpack')).click();
   await page.locator(shoppingCartLink).click();
   await expect(page.locator(pageTitle)).toContainText(titleyourCart);
   await expect(page.locator(checkoutButton)).toBeVisible();
@@ -65,13 +67,37 @@ test("test add order to cart @sanity", async ({ page }) => {
 
 test("test remove order to cart @sanity", async ({ page }) => {
   await expect(page.locator(orderName)).toContainText(orderNameData);
-  await page.locator(addtoCartButton).click();
+  await page.locator(addToCartButton('sauce-labs-backpack')).click();
   await page.locator(removeFromCartButton).click();
-  await page.locator(addtoCartButton).click();
+  await page.locator(addToCartButton('sauce-labs-backpack')).click();
   await page.locator(shoppingCartLink).click();
   await expect(page.locator(pageTitle)).toContainText(titleyourCart);
   await page.locator(removeFromCartButton).click();
   await page.locator(continueShoppingButton).click();
+});
+
+test.only("add multiple orders @sanity", async ({ page }) => {
+ await page.locator(addToCartButton('sauce-labs-backpack')).click();
+  await page.locator(addToCartButton('sauce-labs-bike-light')).click();
+  await page.locator(addToCartButton('sauce-labs-bolt-t-shirt')).click();
+  await page.locator(addToCartButton('sauce-labs-fleece-jacket')).click();
+  await page.locator(shoppingCartLink).click();
+  await expect(page.locator(cartItems)).toHaveCount(4);
+  await page.locator(checkoutButton).click();
+  await page.locator(firstName).click();
+  await page.locator(firstName).fill(firstNameData);
+  await page.locator(lastName).click();
+  await page.locator(lastName).fill(lastNameData);
+  await page.locator(postalCode).click();
+  await page.locator(postalCode).fill(postalCodeData);
+  await expect(page.locator(pageTitle)).toContainText(checkoutInformationText);
+  await page.locator(continueButton).click();
+  await expect(page.locator(pageTitle)).toBeVisible();
+  await page.locator(finishButton).click();
+  await expect(page.locator(checkoutCompleteHeader)).toContainText(
+    checkoutCompleteText,
+  );
+  await page.locator(backToProductsButton).click();
 });
 
 test.afterEach(async ({ page }) => {
