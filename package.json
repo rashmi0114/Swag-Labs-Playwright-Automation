@@ -1,0 +1,23 @@
+{
+  "name": "y",
+  "version": "1.0.0",
+  "description": "play wright automation script with JS",
+  "keywords": [],
+  "homepage": "https://github.com/rashmi0114/Swag-Labs-Playwright-Automation#readme",
+  "bugs": {
+    "url": "https://github.com/rashmi0114/Swag-Labs-Playwright-Automation/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rashmi0114/Swag-Labs-Playwright-Automation.git"
+  },
+  "license": "ISC",
+  "author": "Rashmi Alagiyawanna",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {},
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^25.5.0"
+  }
+}
