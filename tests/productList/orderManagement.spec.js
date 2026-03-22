@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
-import { login, logout } from "../helpers/auth";
+import { login, logout } from "../../helpers/auth";
+import { selectSortAndVerify } from "../../helpers/sortHelper";
 
 const firstNameData = "Rashmi";
 const lastNameData = "Alagiyawanna";
@@ -26,6 +27,7 @@ const shoppingCartLink = '[data-test="shopping-cart-link"]';
 const checkoutButton = '[data-test="checkout"]';
 const continueShoppingButton = '[data-test="continue-shopping"]';
 const cartItems = ".cart_item";
+const itemDetailView = ".inventory_details_container";
 
 test.beforeEach(async ({ page }) => {
   await login(page);
@@ -102,6 +104,18 @@ test("remove multiple orders @sanity", async ({ page }) => {
   await page.locator(removeFromCartButton("bolt-t-shirt")).click();
   await page.locator(removeFromCartButton("fleece-jacket")).click();
   await page.locator(continueShoppingButton).click();
+});
+
+test("verify product sorting @sanity", async ({ page }) => {
+  await expect(page.locator('[data-test="title"]')).toContainText('Products');
+  await selectSortAndVerify(page, 'lohi');
+  await selectSortAndVerify(page, 'hilo');
+});
+
+test('Verify Product detail View @sanity', async ({ page }) => {
+  await page.locator(orderName).first().click();
+  await expect(page.locator(itemDetailView)).toHaveCount(1);
+  await page.locator(backToProductsButton).click();
 });
 
 test.afterEach(async ({ page }) => {
