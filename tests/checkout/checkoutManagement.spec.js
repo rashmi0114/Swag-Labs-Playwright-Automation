@@ -17,6 +17,7 @@ const lastName = '[data-test="lastName"]';
 const postalCode = '[data-test="postalCode"]';
 const continueButton = '[data-test="continue"]';
 const finishButton = '[data-test="finish"]';
+const cancelButton = '[data-test="cancel"]';
 const backToProductsButton = '[data-test="back-to-products"]';
 const orderName =
   '[data-test="item-4-title-link"] [data-test="inventory-item-name"]';
@@ -72,7 +73,7 @@ test('add multiple products remove one item and verify total with tax @payment',
   await page.click(backToProductsButton);
 });
 
-test.only('Verify Warnings when try checkout without filling information @payment', async ({ page }) => {
+test('Verify Warnings when try checkout without filling information @payment', async ({ page }) => {
   const products = ['sauce-labs-backpack', 'sauce-labs-bike-light'];
   for (const product of products) {
   await page.click(addToCartButton(product));
@@ -86,6 +87,20 @@ test.only('Verify Warnings when try checkout without filling information @paymen
   await page.click(finishButton);
   await expect(page.locator(checkoutCompleteHeader)).toContainText(orderconfirmationMessage);
   await page.click(backToProductsButton);
+});
+
+test('Verify cancelling the order before  process checkout @payment', async ({ page }) => {
+  const products = ['sauce-labs-backpack', 'sauce-labs-bike-light'];
+  for (const product of products) {
+  await page.click(addToCartButton(product));
+}
+  await page.click(shoppingCartLink);
+  await page.click(checkoutButton);
+  await page.fill(firstName, firstNameData);
+  await page.fill(lastName, lastNameData);
+  await page.fill(postalCode, postalCodeData);
+  await page.click(continueButton);
+  await page.click(cancelButton);
 });
 
 test.afterEach(async ({ page }) => {
